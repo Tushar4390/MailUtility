@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const nodemailer = require("nodemailer");
+require("dotenv").config();
 
 // create a new Express application instance
 const app = express();
@@ -25,7 +26,7 @@ app.get("/", (req, res) => {
 app.post("/sendmail", (req, res) => {
   console.log("request came");
   let data = req.body;
-  sendMail(user, (err, info) => {
+  sendMail(data, (err, info) => {
     if (err) {
       console.log(err);
       res.status(400);
@@ -38,14 +39,16 @@ app.post("/sendmail", (req, res) => {
 });
 
 const sendMail = async (user, callback) => {
+  console.log(process.env.SMTP_USERNAME);
+  console.log(process.env.SMTP_PASSWORD);
   const transporter = nodemailer.createTransport({
     host: "smtpout.secureserver.net",
     port: "465",
     secure: true,
     requireTLS: true,
     auth: {
-      user: "Sales@inextiot.com",
-      pass: "Mahadev1799@",
+      user: process.env.SMTP_USERNAME,
+      pass: process.env.SMTP_PASSWORD,
     },
     tls: {
       // do not fail on invalid certs
